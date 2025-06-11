@@ -1,0 +1,75 @@
+import { useState, useEffect } from "react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+
+export default function WhatsAppPanel() {
+  const [numero, setNumero] = useState("")
+  const [texto, setTexto] = useState("")
+  const [mensagens, setMensagens] = useState([])
+  const [carregando, setCarregando] = useState(false)
+
+  const carregarMensagens = async () => {
+    try {
+      const res = await fetch("/api/mensagens")
+      const data = await res.json()
+      setMensagens(data)
+    } catch (err) {
+      console.error("Erro ao carregar mensagens", err)
+    }
+  }
+
+  const enviar = async () => {
+    if (!numero || !texto) return
+    setCarregando(true)
+    try {
+      await fetch("/api/enviar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ numero, texto })
+      })
+      setTexto("")
+      await carregarMensagens()
+    } catch (err) {
+      console.error("Erro ao enviar", err)
+    } finally {
+      setCarregando(false)
+    }
+  }
+
+  useEffect(() => {
+    carregarMensagens()
+  }, [])
+
+  return (
+    <div className="p-6 max-w-xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Painel WhatsApp</h1>
+
+      <div className="space-y-2 mb-6">
+        <Input
+          placeholder="Número com DDD"
+          value={numero}
+          onChange={e => setNumero(e.target.value)}
+        />
+        <Input
+          placeholder="Mensagem"
+          value={texto}
+          onChange={e => setTexto(e.target.value)}
+        />
+        <Button onClick={enviar} disabled={carregando}>Enviar</Button>
+      </div>
+
+      <div className="space-y-2">
+        {mensagens.map((msg, i) => (
+          <Card key={i}>
+            <CardContent className="p-3 text-sm">
+              <p><strong>{msg.numero}</strong></p>
+              <p>{msg.texto}</p>
+              <p className="text-gray-500 text-xs">{msg.timestamp}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  )
+}
