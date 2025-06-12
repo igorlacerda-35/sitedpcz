@@ -2,13 +2,10 @@ services:
   - type: web
     name: sitedpcz
     env: node
-    region: oregon
-    plan: free
+    repo: https://github.com/igorlacerda-35/sitedpcz
     branch: main
     buildCommand: npm install && npm run build
     startCommand: npm run preview
     envVars:
       - key: NODE_VERSION
         value: 20
-    staticPublishPath: dist
-    autoDeploy: true
