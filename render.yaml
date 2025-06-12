@@ -2,10 +2,9 @@ services:
   - type: web
     name: sitedpcz
     env: node
-    repo: https://github.com/igorlacerda-35/sitedpcz
-    branch: main
+    plan: free
     buildCommand: npm install && npm run build
     startCommand: npm run preview
-    envVars:
-      - key: NODE_VERSION
-        value: 20
+    nodeVersion: 20.19.2
+    autoDeploy: true
+    rootDir: .
