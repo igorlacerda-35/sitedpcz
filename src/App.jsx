@@ -1,15 +1,23 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Login from './pages/Login';
-import Painel from './pages/Painel';
+// App.jsx
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { useState } from "react";
+import Login from "./pages/Login";
+import Painel from "./pages/Painel";
 
-export default function App() {
+function App() {
+  const [logado, setLogado] = useState(false);
+
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/painel" element={<Painel />} />
+        <Route path="/" element={<Login setLogado={setLogado} />} />
+        <Route
+          path="/painel"
+          element={logado ? <Painel /> : <Navigate to="/" replace />}
+        />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
+
+export default App;
