@@ -1,44 +1,30 @@
-// src/pages/Login.jsx
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
 export default function Login() {
-  const [usuario, setUsuario] = useState("");
-  const [senha, setSenha] = useState("");
-  const navigate = useNavigate();
-
-  const handleLogin = () => {
-    if (usuario === "admin" && senha === "senha123") {
-      localStorage.setItem("logado", "true");
-      navigate("/painel");
-    } else {
-      alert("Usuário ou senha incorretos");
-    }
-  };
-
-  return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-white">
-      <h1 className="text-4xl font-bold mb-6">Área do Cliente</h1>
-      <input
-        type="text"
-        placeholder="Usuário"
-        className="mb-3 px-4 py-2 border rounded"
-        value={usuario}
-        onChange={(e) => setUsuario(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Senha"
-        className="mb-3 px-4 py-2 border rounded"
-        value={senha}
-        onChange={(e) => setSenha(e.target.value)}
-      />
-      <button
-        onClick={handleLogin}
-        className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
-      >
-        Entrar
-      </button>
+  return `
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+      <form onsubmit="login(event)">
+        <h2>Login</h2>
+        <input type="text" id="telefone" placeholder="Telefone" required />
+        <input type="password" id="senha" placeholder="Senha" required />
+        <button type="submit">Entrar</button>
+      </form>
     </div>
-  );
+    <script>
+      async function login(event) {
+        event.preventDefault();
+        const telefone = document.getElementById('telefone').value;
+        const senha = document.getElementById('senha').value;
+
+        const res = await fetch('https://gptwpp.onrender.com/autorizados', {
+          method: 'GET'
+        });
+
+        const dados = await res.json();
+        if (dados.telefones && dados.telefones.includes(telefone)) {
+          alert('Login autorizado!');
+        } else {
+          alert('Telefone não autorizado.');
+        }
+      }
+    </script>
+  `;
 }
