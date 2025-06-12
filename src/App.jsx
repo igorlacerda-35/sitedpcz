@@ -1,19 +1,11 @@
-// App.jsx
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+// src/App.jsx
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Painel from "./pages/Painel";
 
 function App() {
-  const [logado, setLogado] = useState(() => {
-    // Recupera o estado de login do localStorage ao iniciar
-    return localStorage.getItem("logado") === "true";
-  });
-
-  useEffect(() => {
-    // Atualiza o localStorage sempre que o estado de login mudar
-    localStorage.setItem("logado", logado);
-  }, [logado]);
+  const [logado, setLogado] = useState(false);
 
   return (
     <Router>
