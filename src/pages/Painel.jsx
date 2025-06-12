@@ -1,42 +1,24 @@
-import { useEffect, useState } from "react";
+// src/pages/Painel.jsx
+import React, { useEffect, useState } from "react";
 
-function Painel() {
+export default function Painel() {
   const [numeros, setNumeros] = useState([]);
   const [numeroNovo, setNumeroNovo] = useState("");
 
+  const backend = "https://gptwpp.onrender.com";
+
   const fetchNumeros = async () => {
     try {
-      const response = await fetch("https://gptwpp.onrender.com/autorizados");
-      const data = await response.json();
-      setNumeros(data);
-    } catch (error) {
-      console.error("Erro ao buscar números:", error);
-    }
-  };
-
-  const adicionarNumero = async () => {
-    if (!numeroNovo) return;
-    try {
-      await fetch("https://gptwpp.onrender.com/autorizados", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ telefone: numeroNovo }),
+      const resp = await fetch(`${backend}/autorizados`, {
+        method: "GET",
+        headers: {
+          Authorization: "Basic " + btoa("admin:senha123")
+        }
       });
-      setNumeroNovo("");
-      fetchNumeros(); // Atualiza a lista
-    } catch (error) {
-      console.error("Erro ao adicionar número:", error);
-    }
-  };
-
-  const removerNumero = async (telefone) => {
-    try {
-      await fetch(`https://gptwpp.onrender.com/autorizados/${telefone}`, {
-        method: "DELETE",
-      });
-      fetchNumeros(); // Atualiza a lista
-    } catch (error) {
-      console.error("Erro ao remover número:", error);
+      const data = await resp.json();
+      setNumeros(data.autorizados);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -44,35 +26,46 @@ function Painel() {
     fetchNumeros();
   }, []);
 
+  const adicionarNumero = async () => {
+    if (!numeroNovo) return;
+    await fetch(`${backend}/autorizados`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Basic " + btoa("admin:senha123")
+      },
+      body: JSON.stringify({ telefone: numeroNovo })
+    });
+    setNumeroNovo("");
+    fetchNumeros();
+  };
+
+  const removerNumero = async (tel) => {
+    await fetch(`${backend}/autorizados/${tel}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: "Basic " + btoa("admin:senha123")
+      }
+    });
+    fetchNumeros();
+  };
+
   return (
     <div style={{ padding: "2rem" }}>
       <h1>Painel do Cliente</h1>
-      <p>Gerencie seus números autorizados para uso com o bot do WhatsApp.</p>
-
-      <input
-        type="text"
-        value={numeroNovo}
-        onChange={(e) => setNumeroNovo(e.target.value)}
-        placeholder="Novo número com DDD"
-        style={{ marginRight: "0.5rem" }}
-      />
-      <button onClick={adicionarNumero}>Adicionar</button>
-
-      <ul style={{ marginTop: "1rem" }}>
-        {numeros.map((numero) => (
-          <li key={numero.telefone}>
-            {numero.telefone}
-            <button
-              onClick={() => removerNumero(numero.telefone)}
-              style={{ marginLeft: "1rem" }}
-            >
-              Remover
-            </button>
+      <ul>
+        {numeros.map((tel) => (
+          <li key={tel}>
+            {tel} <button onClick={() => removerNumero(tel)}>Remover</button>
           </li>
         ))}
       </ul>
+      <input
+        value={numeroNovo}
+        onChange={(e) => setNumeroNovo(e.target.value)}
+        placeholder="Telefone novo"
+      />
+      <button onClick={adicionarNumero}>Adicionar</button>
     </div>
   );
 }
-
-export default Painel;
