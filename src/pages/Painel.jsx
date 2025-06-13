@@ -6,7 +6,7 @@ export default function Painel() {
 
   const fetchNumeros = async () => {
     try {
-      const response = await fetch("https://gptwpp.onrender.com/autorizados");
+      const response = await fetch("https://wppweb.onrender.com/autorizados");
       const data = await response.json();
       setNumeros(data);
     } catch (error) {
@@ -17,7 +17,7 @@ export default function Painel() {
   const adicionarNumero = async () => {
     if (!numeroNovo) return;
     try {
-      await fetch("https://gptwpp.onrender.com/autorizados", {
+      await fetch("https://wppweb.onrender.com/autorizados", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ telefone: numeroNovo }),
@@ -31,7 +31,7 @@ export default function Painel() {
 
   const removerNumero = async (telefone) => {
     try {
-      await fetch(`https://gptwpp.onrender.com/autorizados/${telefone}`, {
+      await fetch("https://wppweb.onrender.com/autorizados"/${telefone}`, {
         method: "DELETE",
       });
       fetchNumeros();
