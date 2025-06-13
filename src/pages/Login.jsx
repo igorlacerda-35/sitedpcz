@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Login({ setLogado }) {
+export default function Login() {
   const [usuario, setUsuario] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
@@ -9,28 +9,31 @@ export default function Login({ setLogado }) {
 
   const handleLogin = async () => {
     try {
-      const res = await fetch("https://wppweb.onrender.com/login", {
+      const response = await fetch("https://wppweb.onrender.com/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ usuario, senha }),
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        console.log("Usuário logado:", data);
-        setLogado(true);
+      const data = await response.json();
+
+      if (response.ok && data.sucesso) {
+        localStorage.setItem("usuario", data.nome);
         navigate("/painel");
       } else {
-        setErro("Usuário ou senha incorretos.");
+        setErro("Usuário ou senha inválidos");
       }
-    } catch (e) {
-      setErro("Erro ao tentar fazer login.");
+    } catch (error) {
+      console.error("Erro ao tentar fazer login:", error);
+      setErro("Erro no servidor. Tente novamente mais tarde.");
     }
   };
 
   return (
     <div style={{ padding: "2rem" }}>
-      <h2>Login</h2>
+      <h1>Login</h1>
       <input
         type="text"
         placeholder="Usuário"
