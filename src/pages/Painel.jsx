@@ -30,15 +30,15 @@ export default function Painel() {
   };
 
   const removerNumero = async (telefone) => {
-    try {
-      await fetch("https://wppweb.onrender.com/autorizados"/${telefone}`, {
-        method: "DELETE",
-      });
-      fetchNumeros();
-    } catch (error) {
-      console.error("Erro ao remover número:", error);
-    }
-  };
+  try {
+    await fetch(`https://wppweb.onrender.com/autorizados/${telefone}`, {
+      method: "DELETE",
+    });
+    fetchNumeros();
+  } catch (error) {
+    console.error("Erro ao remover número:", error);
+  }
+};
 
   useEffect(() => {
     fetchNumeros();
